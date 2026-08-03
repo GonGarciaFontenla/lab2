@@ -1,5 +1,30 @@
 # Inter Lab - App Web + MySQL con Docker
 
+#######################################
+# NOTA: Este es un README generico. NO REPRESENTA AL TRABAJO PRACTICO O LABORATORIO 2 PROVISTO
+# SOLO UTILICELO DE AYUDA SI SE ENCUENTRA TRABADO EN ALGUN PUNTO DEL LABORATORIO
+#######################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Este proyecto contiene dos imágenes Docker:
 
 1. **mysql-clase** — Base de datos MySQL que se autoconfigura con variables de entorno.
@@ -101,7 +126,7 @@ Internet → ALB (puerto 80) → app-service (puerto 3000) → mysql-service (pu
 
 ### Prerequisitos
 
-- Un cluster ECS creado (Fargate).
+- Un cluster ECS creado ().
 - Una VPC con al menos 2 subnets públicas.
 - Un Application Load Balancer (ALB) con un Target Group vacío (puerto 3000, tipo IP).
 - Dos Security Groups:
@@ -117,7 +142,7 @@ Internet → ALB (puerto 80) → app-service (puerto 3000) → mysql-service (pu
 | Imagen | `maurorosalestc/mysql-clase:latest` |
 | Puerto | 3306 |
 | CPU / Memoria | 256 / 512 |
-| Compatibilidad | Fargate |
+| Compatibilidad |  |
 
 Variables de entorno:
 
@@ -135,7 +160,7 @@ Variables de entorno:
 | Imagen | `maurorosalestc/app-clase:latest` |
 | Puerto | 3000 |
 | CPU / Memoria | 256 / 512 |
-| Compatibilidad | Fargate |
+| Compatibilidad |  |
 
 Variables de entorno:
 
