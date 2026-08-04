@@ -2,7 +2,7 @@
   "family": "frontend-task",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["EC2"],
-  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::585008043636:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "name": "frontend",
