@@ -18,10 +18,10 @@
         { "name": "MYSQL_SSL", "value": "false" }
       ],
       "secrets": [
-        { "name": "MYSQL_HOST",     "valueFrom": "arn:aws:ssm:us-east-1:<ACCOUNT_ID>:parameter/gonza/lab2/db/host" },
-        { "name": "MYSQL_USER",     "valueFrom": "arn:aws:ssm:us-east-1:<ACCOUNT_ID>:parameter/gonza/lab2/db/user" },
-        { "name": "MYSQL_PASSWORD", "valueFrom": "arn:aws:ssm:us-east-1:<ACCOUNT_ID>:parameter/gonza/lab2/db/password" },
-        { "name": "MYSQL_DATABASE", "valueFrom": "arn:aws:ssm:us-east-1:<ACCOUNT_ID>:parameter/gonza/lab2/db/name" }
+        { "name": "MYSQL_HOST",     "valueFrom": "arn:aws:ssm:us-east-1:585008043636:parameter/gonza/lab2/db/host" },
+        { "name": "MYSQL_USER",     "valueFrom": "arn:aws:ssm:us-east-1:585008043636:parameter/gonza/lab2/db/user" },
+        { "name": "MYSQL_PASSWORD", "valueFrom": "arn:aws:ssm:us-east-1:585008043636:parameter/gonza/lab2/db/password" },
+        { "name": "MYSQL_DATABASE", "valueFrom": "arn:aws:ssm:us-east-1:585008043636:parameter/gonza/lab2/db/name" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
