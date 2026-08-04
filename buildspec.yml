@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    IMAGE_REPO_NAME: "lab2-frontend" 
+    IMAGE_REPO_NAME: "gonza-lab2-frontend" 
 phases:
   pre_build:
     commands:
