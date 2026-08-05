@@ -106,7 +106,7 @@ function renderPage(rows) {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     /* ═══════════════════════════════════════════════════════════
-       COSMOS NOTES v2.0 — Ultra Premium Design System
+       COSMOS NOTES v3.0 — Notes-First Layout
        ═══════════════════════════════════════════════════════════ */
 
     :root {
@@ -246,46 +246,64 @@ function renderPage(rows) {
     .cosmos-app {
       position: relative;
       z-index: 1;
-      max-width: 920px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 36px 28px 100px;
+      padding: 24px 28px 60px;
     }
 
-    /* ─── Header / Brand ─────────────────────────────────── */
+    /* ─── Header / Brand — Compact horizontal bar ────────── */
     .cosmos-header {
-      text-align: center;
-      margin-bottom: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
       animation: fadeInDown 0.9s var(--ease-spring);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cosmos-header__left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .cosmos-header__right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
     }
 
     .cosmos-logo {
       display: inline-flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 10px;
+      gap: 12px;
     }
 
     .cosmos-logo__icon {
-      width: 52px;
-      height: 52px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      font-size: 20px;
       box-shadow:
-        0 0 30px rgba(0, 240, 255, 0.3),
-        0 0 60px rgba(168, 85, 247, 0.15),
-        inset 0 0 20px rgba(255, 255, 255, 0.1);
+        0 0 24px rgba(0, 240, 255, 0.3),
+        0 0 48px rgba(168, 85, 247, 0.15),
+        inset 0 0 16px rgba(255, 255, 255, 0.1);
       animation: iconPulse 4s ease-in-out infinite;
       position: relative;
+      flex-shrink: 0;
     }
 
     .cosmos-logo__icon::after {
       content: '';
       position: absolute;
-      inset: -3px;
+      inset: -2px;
       border-radius: 50%;
       background: conic-gradient(from 0deg, var(--cyan-glow), var(--purple-glow), var(--pink-glow), var(--cyan-glow));
       z-index: -1;
@@ -298,14 +316,14 @@ function renderPage(rows) {
     }
 
     @keyframes iconPulse {
-      0%, 100% { box-shadow: 0 0 30px rgba(0, 240, 255, 0.3), 0 0 60px rgba(168, 85, 247, 0.15); }
-      50%      { box-shadow: 0 0 45px rgba(0, 240, 255, 0.45), 0 0 90px rgba(168, 85, 247, 0.2); }
+      0%, 100% { box-shadow: 0 0 24px rgba(0, 240, 255, 0.3), 0 0 48px rgba(168, 85, 247, 0.15); }
+      50%      { box-shadow: 0 0 36px rgba(0, 240, 255, 0.45), 0 0 72px rgba(168, 85, 247, 0.2); }
     }
 
     .cosmos-logo__text {
-      font-size: 36px;
+      font-size: 24px;
       font-weight: 800;
-      letter-spacing: -1.5px;
+      letter-spacing: -1px;
       background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--purple-glow) 50%, var(--pink-glow) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -320,28 +338,24 @@ function renderPage(rows) {
     }
 
     .cosmos-header__sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 400;
-      letter-spacing: 4px;
-      text-transform: uppercase;
+      display: none;
     }
 
     /* ─── Connection Badge ───────────────────────────────── */
     .conn-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 18px;
-      padding: 7px 18px;
+      gap: 6px;
+      padding: 5px 14px;
       border-radius: 100px;
       background: rgba(0, 240, 255, 0.05);
       border: 1px solid rgba(0, 240, 255, 0.12);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--cyan-dim);
       animation: fadeIn 1s ease-out 0.3s both;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
 
     .conn-badge:hover {
@@ -350,11 +364,11 @@ function renderPage(rows) {
     }
 
     .conn-badge__dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #22c55e;
-      box-shadow: 0 0 10px #22c55e;
+      box-shadow: 0 0 8px #22c55e;
       animation: blink 2s ease-in-out infinite;
     }
 
@@ -363,76 +377,56 @@ function renderPage(rows) {
       50% { opacity: 0.3; }
     }
 
-    /* ─── Stats Dashboard ────────────────────────────────── */
+    /* ─── Inline Stats Row ──────────────────────────────── */
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 34px;
-      animation: fadeInUp 0.7s var(--ease-spring) 0.2s both;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.5s var(--ease-spring) 0.15s both;
+      flex-wrap: wrap;
     }
 
     .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
-      border-radius: var(--radius-md);
-      padding: 20px 14px;
-      text-align: center;
+      border-radius: 100px;
+      padding: 8px 16px;
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      transition: all 0.4s var(--ease-spring);
+      transition: all 0.35s var(--ease-spring);
+      cursor: default;
       position: relative;
       overflow: hidden;
-      cursor: default;
     }
 
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--cyan-glow), transparent);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
+    .stat-card::before,
     .stat-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.06), transparent 70%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .stat-card:hover::before,
-    .stat-card:hover::after {
-      opacity: 1;
+      display: none;
     }
 
     .stat-card:hover {
       border-color: var(--glass-border-hover);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 240, 255, 0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 240, 255, 0.06);
     }
 
     .stat-card__icon {
-      font-size: 20px;
-      margin-bottom: 8px;
+      font-size: 14px;
       display: block;
+      line-height: 1;
     }
 
     .stat-card__number {
-      font-size: 30px;
+      font-size: 16px;
       font-weight: 800;
       background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       line-height: 1;
-      margin-bottom: 6px;
       position: relative;
       z-index: 1;
     }
@@ -441,25 +435,33 @@ function renderPage(rows) {
       font-size: 10px;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       font-weight: 600;
       position: relative;
       z-index: 1;
     }
 
-    /* ─── Search Bar ─────────────────────────────────────── */
+    /* ─── Search + Actions Row ─────────────────────────── */
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.5s var(--ease-spring) 0.2s both;
+    }
+
     .search-bar {
       position: relative;
-      margin-bottom: 28px;
-      animation: fadeInUp 0.7s var(--ease-spring) 0.3s both;
+      flex: 1;
+      min-width: 0;
     }
 
     .search-bar__icon {
       position: absolute;
-      left: 18px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 16px;
+      font-size: 14px;
       color: var(--text-muted);
       pointer-events: none;
       transition: color 0.3s ease;
@@ -467,7 +469,7 @@ function renderPage(rows) {
 
     .search-bar__input {
       width: 100%;
-      padding: 14px 50px 14px 48px;
+      padding: 11px 44px 11px 42px;
       border-radius: 100px;
       border: 1px solid var(--glass-border);
       background: var(--glass-bg);
@@ -475,7 +477,7 @@ function renderPage(rows) {
       -webkit-backdrop-filter: blur(24px);
       color: var(--text-primary);
       font-family: 'Outfit', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 400;
       outline: none;
       transition: all 0.4s var(--ease-spring);
@@ -484,7 +486,7 @@ function renderPage(rows) {
     .search-bar__input:focus {
       border-color: rgba(0, 240, 255, 0.3);
       background: rgba(0, 240, 255, 0.04);
-      box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.06), 0 0 30px rgba(0, 240, 255, 0.05);
+      box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.06), 0 0 20px rgba(0, 240, 255, 0.04);
     }
 
     .search-bar__input:focus ~ .search-bar__icon {
@@ -497,15 +499,15 @@ function renderPage(rows) {
 
     .search-bar__kbd {
       position: absolute;
-      right: 18px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
-      padding: 3px 10px;
-      border-radius: 6px;
+      padding: 2px 8px;
+      border-radius: 5px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 9px;
       color: var(--text-muted);
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -517,16 +519,16 @@ function renderPage(rows) {
 
     .search-bar__clear {
       position: absolute;
-      right: 16px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       border: none;
       background: rgba(255, 255, 255, 0.06);
       color: var(--text-secondary);
-      font-size: 14px;
+      font-size: 12px;
       cursor: pointer;
       display: none;
       align-items: center;
@@ -547,18 +549,86 @@ function renderPage(rows) {
       display: none;
     }
 
-    /* ─── Glass Panel (form container) ───────────────────── */
+    /* ─── FAB — New Note Toggle ─────────────────────────── */
+    .fab-new-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 100px;
+      background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
+      color: var(--void);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s var(--ease-spring);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      flex-shrink: 0;
+      letter-spacing: 0.2px;
+    }
+
+    .fab-new-note::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .fab-new-note:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 24px rgba(0, 240, 255, 0.35), 0 0 50px rgba(0, 240, 255, 0.1);
+    }
+
+    .fab-new-note:hover::before {
+      left: 100%;
+    }
+
+    .fab-new-note:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .fab-new-note__icon {
+      font-size: 16px;
+      line-height: 1;
+      transition: transform 0.4s var(--ease-spring);
+    }
+
+    .fab-new-note.is-open .fab-new-note__icon {
+      transform: rotate(45deg);
+    }
+
+    /* ─── Slide-Down Form Panel ──────────────────────────── */
+    .form-panel-wrapper {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s var(--ease-spring), opacity 0.35s ease, margin-bottom 0.5s var(--ease-spring);
+      opacity: 0;
+      margin-bottom: 0;
+    }
+
+    .form-panel-wrapper.is-open {
+      max-height: 600px;
+      opacity: 1;
+      margin-bottom: 20px;
+    }
+
     .glass-panel {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
-      padding: 30px;
-      margin-bottom: 38px;
+      padding: 26px;
       position: relative;
       overflow: hidden;
-      animation: fadeInUp 0.7s var(--ease-spring) 0.35s both;
       transition: all 0.4s var(--ease-spring);
     }
 
@@ -578,24 +648,24 @@ function renderPage(rows) {
     }
 
     .panel-title {
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 700;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       color: var(--text-primary);
     }
 
     .panel-title__icon {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(168, 85, 247, 0.12));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
+      font-size: 15px;
       transition: transform 0.3s var(--ease-spring);
     }
 
@@ -606,8 +676,8 @@ function renderPage(rows) {
     /* ─── Form Elements ──────────────────────────────────── */
     .form-row {
       display: flex;
-      gap: 14px;
-      margin-bottom: 16px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .form-row > .form-group {
@@ -619,15 +689,15 @@ function renderPage(rows) {
     }
 
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .form-label {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-secondary);
-      margin-bottom: 7px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 1.2px;
     }
@@ -636,13 +706,13 @@ function renderPage(rows) {
     .form-textarea,
     .form-select {
       width: 100%;
-      padding: 13px 16px;
+      padding: 11px 14px;
       border-radius: var(--radius-sm);
       border: 1px solid rgba(255, 255, 255, 0.06);
       background: rgba(255, 255, 255, 0.03);
       color: var(--text-primary);
       font-family: 'Outfit', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       transition: all 0.35s var(--ease-spring);
       outline: none;
     }
@@ -652,8 +722,8 @@ function renderPage(rows) {
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5078' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 38px;
+      background-position: right 12px center;
+      padding-right: 34px;
     }
 
     .form-input:focus,
@@ -671,7 +741,7 @@ function renderPage(rows) {
 
     .form-textarea {
       resize: vertical;
-      min-height: 80px;
+      min-height: 64px;
       line-height: 1.6;
     }
 
@@ -690,20 +760,20 @@ function renderPage(rows) {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
     }
 
     .btn-submit {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 13px 30px;
+      gap: 8px;
+      padding: 11px 24px;
       border: none;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
       color: var(--void);
       font-family: 'Outfit', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.4s var(--ease-spring);
@@ -724,8 +794,8 @@ function renderPage(rows) {
     }
 
     .btn-submit:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.35), 0 0 60px rgba(0, 240, 255, 0.1);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 24px rgba(0, 240, 255, 0.35), 0 0 50px rgba(0, 240, 255, 0.1);
     }
 
     .btn-submit:hover::before {
@@ -741,35 +811,35 @@ function renderPage(rows) {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 22px;
-      animation: fadeInUp 0.7s var(--ease-spring) 0.5s both;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.5s var(--ease-spring) 0.3s both;
     }
 
     .notes-header__title {
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .notes-header__count {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 30px;
-      height: 30px;
-      padding: 0 10px;
+      min-width: 26px;
+      height: 26px;
+      padding: 0 8px;
       border-radius: 100px;
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(168, 85, 247, 0.12));
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--cyan-glow);
       border: 1px solid rgba(0, 240, 255, 0.1);
     }
 
     .notes-header__filter-info {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       font-weight: 500;
     }
@@ -778,20 +848,20 @@ function renderPage(rows) {
     .notes-grid {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     .note-card {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-md);
-      padding: 24px 26px;
+      padding: 20px 22px;
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       position: relative;
       overflow: hidden;
       transition: all 0.45s var(--ease-spring);
-      animation: noteSlideIn 0.6s var(--ease-spring) both;
+      animation: noteSlideIn 0.5s var(--ease-spring) both;
     }
 
     .note-card::before {
@@ -807,8 +877,8 @@ function renderPage(rows) {
 
     .note-card:hover {
       border-color: var(--glass-border-hover);
-      transform: translateX(5px);
-      box-shadow: 0 6px 30px rgba(0, 240, 255, 0.06), -4px 0 24px rgba(0, 240, 255, 0.03);
+      transform: translateX(4px);
+      box-shadow: 0 4px 24px rgba(0, 240, 255, 0.06), -3px 0 20px rgba(0, 240, 255, 0.03);
     }
 
     .note-card:hover::before {
@@ -823,9 +893,9 @@ function renderPage(rows) {
       content: '';
       position: absolute;
       top: -1px;
-      right: 24px;
-      width: 26px;
-      height: 28px;
+      right: 20px;
+      width: 22px;
+      height: 24px;
       background: linear-gradient(135deg, var(--purple-glow), var(--pink-glow));
       clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%);
       box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
@@ -838,7 +908,7 @@ function renderPage(rows) {
     @keyframes noteSlideIn {
       from {
         opacity: 0;
-        transform: translateY(24px) scale(0.97);
+        transform: translateY(18px) scale(0.98);
       }
       to {
         opacity: 1;
@@ -850,33 +920,33 @@ function renderPage(rows) {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 10px;
+      gap: 14px;
+      margin-bottom: 8px;
     }
 
     .note-card__title-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex: 1;
       min-width: 0;
     }
 
     .note-card__title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--text-primary);
       line-height: 1.4;
     }
 
     .note-card__title-input {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--text-primary);
       background: rgba(0, 240, 255, 0.04);
       border: 1px solid rgba(0, 240, 255, 0.2);
       border-radius: var(--radius-sm);
-      padding: 6px 12px;
+      padding: 5px 10px;
       width: 100%;
       font-family: 'Outfit', sans-serif;
       outline: none;
@@ -890,7 +960,7 @@ function renderPage(rows) {
 
     .note-card__actions {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       flex-shrink: 0;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -901,8 +971,8 @@ function renderPage(rows) {
     }
 
     .btn-icon {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: var(--radius-sm);
       border: 1px solid rgba(255, 255, 255, 0.06);
       background: rgba(255, 255, 255, 0.03);
@@ -911,7 +981,7 @@ function renderPage(rows) {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 13px;
       transition: all 0.3s var(--ease-spring);
     }
 
@@ -959,29 +1029,29 @@ function renderPage(rows) {
     }
 
     .note-card__body {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.7;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       white-space: pre-wrap;
       word-wrap: break-word;
     }
 
     .note-card__body-edit {
       width: 100%;
-      padding: 10px 14px;
-      min-height: 60px;
+      padding: 8px 12px;
+      min-height: 50px;
       border: 1px solid rgba(0, 240, 255, 0.2);
       border-radius: var(--radius-sm);
       background: rgba(0, 240, 255, 0.04);
       color: var(--text-primary);
       font-family: 'Outfit', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.7;
       resize: vertical;
       outline: none;
       transition: all 0.3s ease;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .note-card__body-edit:focus {
@@ -992,11 +1062,11 @@ function renderPage(rows) {
     .note-card__edit-actions {
       display: flex;
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .btn-save-edit {
-      padding: 7px 18px;
+      padding: 6px 16px;
       border: none;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
@@ -1014,7 +1084,7 @@ function renderPage(rows) {
     }
 
     .btn-cancel-edit {
-      padding: 7px 18px;
+      padding: 6px 16px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: var(--radius-sm);
       background: rgba(255, 255, 255, 0.04);
@@ -1038,16 +1108,16 @@ function renderPage(rows) {
     .note-card__footer {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-muted);
     }
 
     .note-card__footer-dot {
-      width: 4px;
-      height: 4px;
+      width: 3px;
+      height: 3px;
       border-radius: 50%;
       background: var(--purple-glow);
       opacity: 0.4;
@@ -1060,12 +1130,12 @@ function renderPage(rows) {
     .note-card__cat-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 2px 10px;
+      gap: 4px;
+      padding: 1px 8px;
       border-radius: 100px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -1074,13 +1144,13 @@ function renderPage(rows) {
     /* ─── Empty State ────────────────────────────────────── */
     .empty-state {
       text-align: center;
-      padding: 70px 20px;
-      animation: fadeInUp 0.7s var(--ease-spring) 0.5s both;
+      padding: 60px 20px;
+      animation: fadeInUp 0.5s var(--ease-spring) 0.3s both;
     }
 
     .empty-state__icon {
-      font-size: 64px;
-      margin-bottom: 20px;
+      font-size: 56px;
+      margin-bottom: 16px;
       animation: float 5s ease-in-out infinite;
     }
 
@@ -1091,24 +1161,24 @@ function renderPage(rows) {
     }
 
     .empty-state__title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .empty-state__text {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
       line-height: 1.6;
     }
 
     .empty-state__hint {
-      margin-top: 20px;
+      margin-top: 16px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 18px;
+      padding: 7px 16px;
       border-radius: 100px;
       background: rgba(0, 240, 255, 0.05);
       border: 1px solid rgba(0, 240, 255, 0.1);
@@ -1120,7 +1190,7 @@ function renderPage(rows) {
     /* ─── No Results ──────────────────────────────────────── */
     .no-results {
       text-align: center;
-      padding: 40px 20px;
+      padding: 36px 20px;
       display: none;
     }
 
@@ -1129,29 +1199,29 @@ function renderPage(rows) {
     }
 
     .no-results__icon {
-      font-size: 40px;
-      margin-bottom: 12px;
+      font-size: 36px;
+      margin-bottom: 10px;
       opacity: 0.6;
     }
 
     .no-results__text {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
     }
 
     /* ─── Toast / Notification ───────────────────────────── */
     .toast-container {
       position: fixed;
-      bottom: 28px;
-      right: 28px;
+      bottom: 24px;
+      right: 24px;
       z-index: 1000;
       display: flex;
       flex-direction: column-reverse;
-      gap: 10px;
+      gap: 8px;
     }
 
     .toast {
-      padding: 14px 24px 14px 18px;
+      padding: 12px 20px 12px 16px;
       border-radius: var(--radius-md);
       background: rgba(12, 12, 36, 0.9);
       border: 1px solid var(--glass-border);
@@ -1162,13 +1232,13 @@ function renderPage(rows) {
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       transform: translateX(120%);
       opacity: 0;
       transition: all 0.5s var(--ease-spring);
       position: relative;
       overflow: hidden;
-      min-width: 260px;
+      min-width: 240px;
     }
 
     .toast--visible {
@@ -1242,8 +1312,8 @@ function renderPage(rows) {
       background: var(--nebula-dark);
       border: 1px solid var(--glass-border);
       border-radius: var(--radius-lg);
-      padding: 36px;
-      max-width: 420px;
+      padding: 32px;
+      max-width: 400px;
       width: 92%;
       text-align: center;
       transform: scale(0.85) translateY(30px);
@@ -1267,31 +1337,31 @@ function renderPage(rows) {
     }
 
     .modal__icon {
-      font-size: 44px;
-      margin-bottom: 18px;
+      font-size: 40px;
+      margin-bottom: 14px;
     }
 
     .modal__title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .modal__text {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-secondary);
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       line-height: 1.6;
     }
 
     .modal__actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       justify-content: center;
     }
 
     .btn-modal {
-      padding: 11px 26px;
+      padding: 10px 22px;
       border-radius: var(--radius-sm);
       font-family: 'Outfit', sans-serif;
       font-size: 13px;
@@ -1340,10 +1410,10 @@ function renderPage(rows) {
     /* ─── Footer ─────────────────────────────────────────── */
     .cosmos-footer {
       text-align: center;
-      padding: 48px 0 0;
-      font-size: 12px;
+      padding: 32px 0 0;
+      font-size: 11px;
       color: var(--text-muted);
-      animation: fadeIn 1s ease-out 0.8s both;
+      animation: fadeIn 1s ease-out 0.6s both;
     }
 
     .cosmos-footer a {
@@ -1357,24 +1427,24 @@ function renderPage(rows) {
     }
 
     .cosmos-footer__shortcuts {
-      margin-top: 12px;
+      margin-top: 10px;
       display: flex;
       justify-content: center;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
     .cosmos-footer__shortcut {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: var(--text-muted);
     }
 
     .cosmos-footer__shortcut kbd {
-      padding: 2px 7px;
+      padding: 2px 6px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1388,12 +1458,12 @@ function renderPage(rows) {
     }
 
     @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-24px); }
+      from { opacity: 0; transform: translateY(-18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -1416,23 +1486,33 @@ function renderPage(rows) {
     /* ─── Responsive ─────────────────────────────────────── */
     @media (max-width: 700px) {
       .cosmos-app {
-        padding: 20px 16px 70px;
+        padding: 16px 14px 60px;
       }
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .cosmos-header {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 10px;
       }
+      .cosmos-header__right {
+        align-self: flex-start;
+      }
+      .stats-grid {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
       .stat-card {
-        padding: 16px 10px;
+        padding: 6px 12px;
       }
-      .stat-card__number {
-        font-size: 24px;
+      .toolbar-row {
+        flex-direction: column;
+        gap: 10px;
       }
-      .glass-panel {
-        padding: 22px 18px;
+      .fab-new-note {
+        width: 100%;
+        justify-content: center;
       }
       .cosmos-logo__text {
-        font-size: 26px;
+        font-size: 20px;
       }
       .note-card__actions {
         opacity: 1;
@@ -1442,7 +1522,7 @@ function renderPage(rows) {
         gap: 0;
       }
       .form-row > .form-group {
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
       .cosmos-footer__shortcuts {
         display: none;
@@ -1457,8 +1537,8 @@ function renderPage(rows) {
 
     .btn-submit.is-loading::after {
       content: '';
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border: 2px solid transparent;
       border-top-color: currentColor;
       border-radius: 50%;
@@ -1479,9 +1559,9 @@ function renderPage(rows) {
     .section-divider {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin: 20px 0 16px;
-      font-size: 11px;
+      gap: 10px;
+      margin: 16px 0 12px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -1497,7 +1577,7 @@ function renderPage(rows) {
     }
 
     .section-divider__icon {
-      font-size: 14px;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -1518,25 +1598,28 @@ function renderPage(rows) {
   <!-- Main App -->
   <div class="cosmos-app">
 
-    <!-- Header -->
+    <!-- Compact Header -->
     <header class="cosmos-header">
-      <div class="cosmos-logo">
-        <div class="cosmos-logo__icon">✦</div>
-        <h1 class="cosmos-logo__text">Cosmos Notes</h1>
+      <div class="cosmos-header__left">
+        <div class="cosmos-logo">
+          <div class="cosmos-logo__icon">✦</div>
+          <h1 class="cosmos-logo__text">Cosmos Notes</h1>
+        </div>
       </div>
-      <p class="cosmos-header__sub">Mission Control for Your Thoughts</p>
-      <div class="conn-badge">
-        <span class="conn-badge__dot"></span>
-        ${esc(dbConfig.host)} · ${esc(dbConfig.database)} · ${esc(dbConfig.user)}
+      <div class="cosmos-header__right">
+        <div class="conn-badge">
+          <span class="conn-badge__dot"></span>
+          ${esc(dbConfig.host)} · ${esc(dbConfig.database)}
+        </div>
       </div>
     </header>
 
-    <!-- Stats Dashboard -->
+    <!-- Compact Inline Stats -->
     <div class="stats-grid">
       <div class="stat-card">
         <span class="stat-card__icon">📝</span>
         <div class="stat-card__number" data-count="${noteCount}">0</div>
-        <div class="stat-card__label">Total Notes</div>
+        <div class="stat-card__label">Notes</div>
       </div>
       <div class="stat-card">
         <span class="stat-card__icon">📌</span>
@@ -1555,47 +1638,55 @@ function renderPage(rows) {
       </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar" id="searchBar">
-      <span class="search-bar__icon">🔍</span>
-      <input class="search-bar__input" type="text" id="searchInput" placeholder="Search your cosmos..." autocomplete="off">
-      <span class="search-bar__kbd">/</span>
-      <button class="search-bar__clear" id="searchClear" type="button" aria-label="Clear search">✕</button>
+    <!-- Toolbar: Search + New Note Button -->
+    <div class="toolbar-row">
+      <div class="search-bar" id="searchBar">
+        <span class="search-bar__icon">🔍</span>
+        <input class="search-bar__input" type="text" id="searchInput" placeholder="Search your cosmos..." autocomplete="off">
+        <span class="search-bar__kbd">/</span>
+        <button class="search-bar__clear" id="searchClear" type="button" aria-label="Clear search">✕</button>
+      </div>
+      <button class="fab-new-note" id="fabNewNote" type="button" aria-label="New note">
+        <span class="fab-new-note__icon">✚</span>
+        <span>New Note</span>
+      </button>
     </div>
 
-    <!-- New Note Form -->
-    <div class="glass-panel">
-      <div class="panel-title">
-        <div class="panel-title__icon">✍️</div>
-        Launch a New Note
-      </div>
-      <form method="POST" action="/notas" id="noteForm">
-        <div class="form-row">
+    <!-- Collapsible Form Panel -->
+    <div class="form-panel-wrapper" id="formPanelWrapper">
+      <div class="glass-panel">
+        <div class="panel-title">
+          <div class="panel-title__icon">✍️</div>
+          Launch a New Note
+        </div>
+        <form method="POST" action="/notas" id="noteForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="titulo">Title</label>
+              <input class="form-input" type="text" id="titulo" name="titulo" placeholder="What's on your mind?" required autocomplete="off">
+            </div>
+            <div class="form-group" style="width: 150px; flex-shrink: 0;">
+              <label class="form-label" for="category">Category</label>
+              <select class="form-select" id="category" name="category">
+                ${Object.entries(CATEGORIES).map(([key, cat]) => `<option value="${key}" ${key === 'nebula' ? 'selected' : ''}>${cat.label}</option>`).join('')}
+              </select>
+            </div>
+          </div>
           <div class="form-group">
-            <label class="form-label" for="titulo">Title</label>
-            <input class="form-input" type="text" id="titulo" name="titulo" placeholder="What's on your mind?" required autocomplete="off">
+            <label class="form-label" for="contenido">Content</label>
+            <textarea class="form-textarea" id="contenido" name="contenido" rows="2" placeholder="Capture your thoughts..."></textarea>
           </div>
-          <div class="form-group" style="width: 160px; flex-shrink: 0;">
-            <label class="form-label" for="category">Category</label>
-            <select class="form-select" id="category" name="category">
-              ${Object.entries(CATEGORIES).map(([key, cat]) => `<option value="${key}" ${key === 'nebula' ? 'selected' : ''}>${cat.label}</option>`).join('')}
-            </select>
+          <div class="form-actions">
+            <button class="btn-submit" type="submit" id="submitBtn">
+              <span>🚀</span>
+              <span>Launch Note</span>
+            </button>
+            <span class="cosmos-footer__shortcut" style="font-size:10px;color:var(--text-muted)">
+              <kbd>Ctrl</kbd>+<kbd>Enter</kbd> submit · <kbd>Esc</kbd> close
+            </span>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="contenido">Content</label>
-          <textarea class="form-textarea" id="contenido" name="contenido" rows="3" placeholder="Capture your thoughts into the cosmos..."></textarea>
-        </div>
-        <div class="form-actions">
-          <button class="btn-submit" type="submit" id="submitBtn">
-            <span>🚀</span>
-            <span>Launch Note</span>
-          </button>
-          <span class="cosmos-footer__shortcut" style="font-size:11px;color:var(--text-muted)">
-            <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit · <kbd>N</kbd> new note
-          </span>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
 
     <!-- Notes List -->
@@ -2015,10 +2106,16 @@ function renderPage(rows) {
         return;
       }
 
-      // "N" — focus new note title
+      // "N" — open form panel and focus new note title
       if (e.key === 'n' || e.key === 'N') {
         e.preventDefault();
-        document.getElementById('titulo').focus();
+        const wrapper = document.getElementById('formPanelWrapper');
+        const fab = document.getElementById('fabNewNote');
+        if (!wrapper.classList.contains('is-open')) {
+          wrapper.classList.add('is-open');
+          fab.classList.add('is-open');
+        }
+        setTimeout(() => document.getElementById('titulo').focus(), 350);
         return;
       }
     });
@@ -2261,12 +2358,31 @@ function renderPage(rows) {
     });
 
     // ═══════════════════════════════════════════════════════════
-    // Auto-focus title input
+    // FAB — Toggle form panel
     // ═══════════════════════════════════════════════════════════
-    // Don't auto-focus on mobile to avoid keyboard popup
-    if (window.innerWidth > 768) {
-      document.getElementById('titulo').focus();
-    }
+    (function() {
+      const fab = document.getElementById('fabNewNote');
+      const wrapper = document.getElementById('formPanelWrapper');
+      if (!fab || !wrapper) return;
+
+      fab.addEventListener('click', () => {
+        const isOpen = wrapper.classList.toggle('is-open');
+        fab.classList.toggle('is-open', isOpen);
+        if (isOpen) {
+          // Focus title after animation
+          setTimeout(() => document.getElementById('titulo').focus(), 350);
+        }
+      });
+
+      // Close panel on Escape when form is focused
+      wrapper.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          wrapper.classList.remove('is-open');
+          fab.classList.remove('is-open');
+          fab.focus();
+        }
+      });
+    })();
   </script>
 </body>
 </html>`;
