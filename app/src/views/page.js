@@ -28,8 +28,8 @@ function renderPage(rows) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cosmos Notes — A stunning sci-fi note-taking experience powered by the stars">
-  <title>Cosmos Notes ✦</title>
+  <meta name="description" content="Tera Notes — A stunning sci-fi note-taking experience powered by Teraclaude">
+  <title>Tera Notes ✦</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -39,6 +39,9 @@ function renderPage(rows) {
 
   <!-- Starfield -->
   <canvas id="starfield"></canvas>
+
+  <!-- Rocket Canvas -->
+  <canvas id="rocketCanvas"></canvas>
 
   <!-- Planets -->
   <canvas id="planetsCanvas"></canvas>
@@ -59,8 +62,8 @@ function renderPage(rows) {
     <header class="cosmos-header">
       <div class="cosmos-header__left">
         <div class="cosmos-logo">
-          <div class="cosmos-logo__icon">✦</div>
-          <h1 class="cosmos-logo__text">Cosmos Notes</h1>
+          <div class="cosmos-logo__icon">🚀</div>
+          <h1 class="cosmos-logo__text">Tera Notes</h1>
         </div>
       </div>
       <div class="cosmos-header__right">
@@ -245,7 +248,7 @@ function renderPage(rows) {
     `}
 
     <footer class="cosmos-footer">
-      Cosmos Notes ✦ Powered by Express + MySQL · ${new Date().getFullYear()}
+      Tera Notes ✦ Powered by Teraclaude & Express + MySQL · ${new Date().getFullYear()}
       <div class="cosmos-footer__shortcuts">
         <span class="cosmos-footer__shortcut"><kbd>/</kbd> Search</span>
         <span class="cosmos-footer__shortcut"><kbd>N</kbd> New note</span>

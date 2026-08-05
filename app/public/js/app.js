@@ -104,6 +104,223 @@
 })();
 
 // ═══════════════════════════════════════════════════════════
+// SPACE ROCKET — Flying rocket with thrust flame & smoke particles
+// ═══════════════════════════════════════════════════════════
+(function() {
+  const canvas = document.getElementById('rocketCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let rocket = null;
+  let particles = [];
+  let nextLaunchTime = Date.now() + 2000; // First launch after 2 seconds
+
+  function spawnRocket() {
+    // Choose start position outside viewport
+    const startSide = Math.random() > 0.5 ? 'left' : 'bottom';
+    let startX, startY, targetX, targetY;
+
+    if (startSide === 'left') {
+      startX = -120;
+      startY = h * (0.3 + Math.random() * 0.5);
+      targetX = w + 120;
+      targetY = startY - (h * (0.2 + Math.random() * 0.3));
+    } else {
+      startX = w * (0.1 + Math.random() * 0.5);
+      startY = h + 120;
+      targetX = startX + (w * (0.3 + Math.random() * 0.4));
+      targetY = -120;
+    }
+
+    const angle = Math.atan2(targetY - startY, targetX - startX);
+    const speed = 2.5 + Math.random() * 2.0;
+
+    rocket = {
+      x: startX,
+      y: startY,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      angle: angle,
+      size: 28,
+      active: true
+    };
+  }
+
+  function drawRocket(r) {
+    ctx.save();
+    ctx.translate(r.x, r.y);
+    ctx.rotate(r.angle + Math.PI / 2); // Align rocket along flight direction
+
+    // Thruster Flame
+    const time = Date.now();
+    const flameHeight = 22 + Math.sin(time * 0.05) * 6;
+    
+    // Outer flame
+    const outerFlame = ctx.createLinearGradient(0, 15, 0, 15 + flameHeight);
+    outerFlame.addColorStop(0, '#ff4500');
+    outerFlame.addColorStop(0.5, '#ff8c00');
+    outerFlame.addColorStop(1, 'rgba(255, 140, 0, 0)');
+    ctx.fillStyle = outerFlame;
+    ctx.beginPath();
+    ctx.moveTo(-6, 15);
+    ctx.lineTo(6, 15);
+    ctx.lineTo(0, 15 + flameHeight);
+    ctx.closePath();
+    ctx.fill();
+
+    // Inner flame
+    const innerFlame = ctx.createLinearGradient(0, 15, 0, 15 + flameHeight * 0.6);
+    innerFlame.addColorStop(0, '#ffffff');
+    innerFlame.addColorStop(0.5, '#00f0ff');
+    innerFlame.addColorStop(1, 'rgba(0, 240, 255, 0)');
+    ctx.fillStyle = innerFlame;
+    ctx.beginPath();
+    ctx.moveTo(-3, 15);
+    ctx.lineTo(3, 15);
+    ctx.lineTo(0, 15 + flameHeight * 0.6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Rocket Body (Sleek Metallic Fuselage)
+    const bodyGrad = ctx.createLinearGradient(-10, 0, 10, 0);
+    bodyGrad.addColorStop(0, '#e2e8f0');
+    bodyGrad.addColorStop(0.5, '#ffffff');
+    bodyGrad.addColorStop(1, '#94a3b8');
+    ctx.fillStyle = bodyGrad;
+
+    ctx.beginPath();
+    ctx.moveTo(0, -26); // Nose tip
+    ctx.bezierCurveTo(10, -10, 10, 10, 8, 15);
+    ctx.lineTo(-8, 15);
+    ctx.bezierCurveTo(-10, 10, -10, -10, 0, -26);
+    ctx.closePath();
+    ctx.fill();
+
+    // Red Nose Cone (Teraclaude Accent)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(0, -26);
+    ctx.bezierCurveTo(5, -18, 5, -12, 6, -10);
+    ctx.lineTo(-6, -10);
+    ctx.bezierCurveTo(-5, -12, -5, -18, 0, -26);
+    ctx.closePath();
+    ctx.fill();
+
+    // Fins
+    ctx.fillStyle = '#00f0ff'; // Cyan neon fins
+    // Left fin
+    ctx.beginPath();
+    ctx.moveTo(-8, 5);
+    ctx.lineTo(-15, 18);
+    ctx.lineTo(-7, 15);
+    ctx.closePath();
+    ctx.fill();
+
+    // Right fin
+    ctx.beginPath();
+    ctx.moveTo(8, 5);
+    ctx.lineTo(15, 18);
+    ctx.lineTo(7, 15);
+    ctx.closePath();
+    ctx.fill();
+
+    // Porthole Window
+    ctx.beginPath();
+    ctx.arc(0, -2, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#0f172a';
+    ctx.fill();
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Window Reflection
+    ctx.beginPath();
+    ctx.arc(-1, -3, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function spawnParticle(x, y, angle) {
+    const spread = (Math.random() - 0.5) * 0.4;
+    const speed = 1 + Math.random() * 1.5;
+    const pAngle = angle + Math.PI + spread;
+    particles.push({
+      x: x + (Math.random() - 0.5) * 6,
+      y: y + (Math.random() - 0.5) * 6,
+      vx: Math.cos(pAngle) * speed,
+      vy: Math.sin(pAngle) * speed,
+      radius: 2 + Math.random() * 3,
+      alpha: 0.7,
+      color: Math.random() > 0.4 ? 'rgba(0, 240, 255,' : 'rgba(168, 85, 247,'
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    const now = Date.now();
+
+    // Check if it's time to launch a new rocket
+    if (!rocket && now >= nextLaunchTime) {
+      spawnRocket();
+    }
+
+    if (rocket) {
+      rocket.x += rocket.vx;
+      rocket.y += rocket.vy;
+
+      // Emit thruster smoke/sparkles
+      const tailX = rocket.x - Math.cos(rocket.angle) * 20;
+      const tailY = rocket.y - Math.sin(rocket.angle) * 20;
+      for (let i = 0; i < 2; i++) {
+        spawnParticle(tailX, tailY, rocket.angle);
+      }
+
+      drawRocket(rocket);
+
+      // Check out of bounds
+      if (rocket.x > w + 200 || rocket.x < -200 || rocket.y < -200 || rocket.y > h + 200) {
+        rocket = null;
+        // Schedule next rocket launch between 12 to 24 seconds later
+        nextLaunchTime = now + 12000 + Math.random() * 12000;
+      }
+    }
+
+    // Update and draw trail particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.015;
+      p.radius += 0.05;
+
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+
+// ═══════════════════════════════════════════════════════════
 // PLANETS — Procedural orbiting planets in the background
 // ═══════════════════════════════════════════════════════════
 (function() {
