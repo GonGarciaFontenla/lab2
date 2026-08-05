@@ -179,6 +179,17 @@ function renderPage(rows) {
       pointer-events: none;
     }
 
+    /* ─── Planets Canvas ────────────────────────────────── */
+    #planetsCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
     /* ─── Ambient Nebula Glow (Parallax-reactive) ───────── */
     .nebula-orb {
       position: fixed;
@@ -1586,6 +1597,9 @@ function renderPage(rows) {
   <!-- Starfield -->
   <canvas id="starfield"></canvas>
 
+  <!-- Planets -->
+  <canvas id="planetsCanvas"></canvas>
+
   <!-- Grid overlay -->
   <div class="grid-overlay"></div>
 
@@ -1918,6 +1932,414 @@ function renderPage(rows) {
       resize();
       createStars();
       draw();
+    })();
+
+    // ═══════════════════════════════════════════════════════════
+    // PLANETS — Procedural orbiting planets in the background
+    // ═══════════════════════════════════════════════════════════
+    (function() {
+      const canvas = document.getElementById('planetsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h;
+      let mouseX = 0, mouseY = 0;
+      let smoothMouseX = 0, smoothMouseY = 0;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / w - 0.5) * 2;
+        mouseY = (e.clientY / h - 0.5) * 2;
+      });
+
+      // Planet definitions — each is a unique world
+      const planets = [
+        {
+          name: 'Aethon',
+          radius: 38,
+          orbitCenterX: 0.12,
+          orbitCenterY: 0.25,
+          orbitRadiusX: 30,
+          orbitRadiusY: 15,
+          orbitSpeed: 0.00012,
+          phase: 0,
+          parallax: 0.025,
+          type: 'gas',
+          baseHue: 270,
+          bandColors: [
+            'rgba(120, 60, 200, 0.6)',
+            'rgba(168, 85, 247, 0.5)',
+            'rgba(100, 40, 180, 0.55)',
+            'rgba(140, 70, 220, 0.45)',
+            'rgba(80, 30, 160, 0.5)',
+          ],
+          glowColor: 'rgba(168, 85, 247, 0.15)',
+          glowSize: 20,
+          hasRing: false,
+          moons: 1,
+          opacity: 0.35,
+          rotation: 0,
+          rotationSpeed: 0.0003,
+        },
+        {
+          name: 'Cryos',
+          radius: 55,
+          orbitCenterX: 0.85,
+          orbitCenterY: 0.65,
+          orbitRadiusX: 40,
+          orbitRadiusY: 20,
+          orbitSpeed: 0.00008,
+          phase: Math.PI * 0.7,
+          parallax: 0.035,
+          type: 'ringed',
+          baseHue: 35,
+          bandColors: [
+            'rgba(210, 170, 100, 0.5)',
+            'rgba(240, 200, 130, 0.4)',
+            'rgba(190, 150, 80, 0.5)',
+            'rgba(220, 180, 110, 0.45)',
+            'rgba(180, 140, 70, 0.5)',
+            'rgba(200, 160, 90, 0.4)',
+          ],
+          glowColor: 'rgba(251, 191, 36, 0.12)',
+          glowSize: 28,
+          hasRing: true,
+          ringColor1: 'rgba(251, 191, 36, 0.18)',
+          ringColor2: 'rgba(245, 158, 11, 0.08)',
+          ringInner: 1.3,
+          ringOuter: 2.1,
+          ringTilt: 0.35,
+          moons: 2,
+          opacity: 0.30,
+          rotation: 0,
+          rotationSpeed: 0.00015,
+        },
+        {
+          name: 'Verdantis',
+          radius: 26,
+          orbitCenterX: 0.55,
+          orbitCenterY: 0.80,
+          orbitRadiusX: 25,
+          orbitRadiusY: 12,
+          orbitSpeed: 0.00018,
+          phase: Math.PI * 1.3,
+          parallax: 0.02,
+          type: 'terrestrial',
+          baseHue: 160,
+          bandColors: [
+            'rgba(20, 120, 90, 0.5)',
+            'rgba(34, 197, 94, 0.4)',
+            'rgba(15, 100, 75, 0.5)',
+            'rgba(52, 211, 153, 0.35)',
+          ],
+          glowColor: 'rgba(52, 211, 153, 0.12)',
+          glowSize: 14,
+          hasRing: false,
+          moons: 0,
+          opacity: 0.28,
+          rotation: 0,
+          rotationSpeed: 0.0005,
+        },
+        {
+          name: 'Nereid',
+          radius: 44,
+          orbitCenterX: 0.25,
+          orbitCenterY: 0.70,
+          orbitRadiusX: 35,
+          orbitRadiusY: 18,
+          orbitSpeed: 0.0001,
+          phase: Math.PI * 0.4,
+          parallax: 0.03,
+          type: 'ice',
+          baseHue: 195,
+          bandColors: [
+            'rgba(0, 160, 200, 0.45)',
+            'rgba(0, 200, 240, 0.35)',
+            'rgba(0, 140, 180, 0.5)',
+            'rgba(0, 180, 220, 0.4)',
+            'rgba(0, 120, 160, 0.45)',
+          ],
+          glowColor: 'rgba(0, 240, 255, 0.10)',
+          glowSize: 22,
+          hasRing: true,
+          ringColor1: 'rgba(0, 240, 255, 0.10)',
+          ringColor2: 'rgba(0, 180, 220, 0.04)',
+          ringInner: 1.25,
+          ringOuter: 1.8,
+          ringTilt: 0.25,
+          moons: 1,
+          opacity: 0.25,
+          rotation: 0,
+          rotationSpeed: 0.0002,
+        },
+        {
+          name: 'Ignara',
+          radius: 20,
+          orbitCenterX: 0.75,
+          orbitCenterY: 0.18,
+          orbitRadiusX: 20,
+          orbitRadiusY: 10,
+          orbitSpeed: 0.00025,
+          phase: Math.PI * 1.8,
+          parallax: 0.015,
+          type: 'terrestrial',
+          baseHue: 15,
+          bandColors: [
+            'rgba(200, 80, 40, 0.5)',
+            'rgba(244, 114, 70, 0.4)',
+            'rgba(180, 60, 30, 0.55)',
+            'rgba(220, 100, 50, 0.45)',
+          ],
+          glowColor: 'rgba(244, 114, 70, 0.10)',
+          glowSize: 10,
+          hasRing: false,
+          moons: 0,
+          opacity: 0.22,
+          rotation: 0,
+          rotationSpeed: 0.0006,
+        },
+      ];
+
+      // Generate moon data for each planet
+      planets.forEach(p => {
+        p.moonData = [];
+        for (let i = 0; i < p.moons; i++) {
+          p.moonData.push({
+            distance: p.radius * (1.8 + i * 0.7),
+            size: 2.5 + Math.random() * 2,
+            speed: 0.001 + Math.random() * 0.002,
+            phase: Math.random() * Math.PI * 2,
+            brightness: 0.4 + Math.random() * 0.3,
+          });
+        }
+      });
+
+      function drawPlanet(planet, time) {
+        // Calculate orbital position
+        const orbitAngle = time * planet.orbitSpeed + planet.phase;
+        const baseX = planet.orbitCenterX * w + Math.cos(orbitAngle) * planet.orbitRadiusX;
+        const baseY = planet.orbitCenterY * h + Math.sin(orbitAngle) * planet.orbitRadiusY;
+
+        // Add parallax
+        const px = baseX + smoothMouseX * planet.parallax * w * 0.5;
+        const py = baseY + smoothMouseY * planet.parallax * h * 0.5;
+
+        const r = planet.radius;
+
+        ctx.save();
+        ctx.globalAlpha = planet.opacity;
+
+        // Outer atmospheric glow
+        const glowGrad = ctx.createRadialGradient(px, py, r * 0.5, px, py, r + planet.glowSize);
+        glowGrad.addColorStop(0, planet.glowColor);
+        glowGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = glowGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, r + planet.glowSize, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw ring behind planet (bottom half)
+        if (planet.hasRing) {
+          drawRing(px, py, planet, time, 'behind');
+        }
+
+        // Planet body — clipped circle with bands
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Base gradient
+        const baseGrad = ctx.createRadialGradient(px - r * 0.3, py - r * 0.3, 0, px, py, r);
+        baseGrad.addColorStop(0, 'hsla(' + planet.baseHue + ', 40%, 30%, 0.8)');
+        baseGrad.addColorStop(1, 'hsla(' + planet.baseHue + ', 50%, 12%, 0.9)');
+        ctx.fillStyle = baseGrad;
+        ctx.fillRect(px - r, py - r, r * 2, r * 2);
+
+        // Surface bands (rotate over time)
+        planet.rotation += planet.rotationSpeed;
+        const bandOffset = (planet.rotation % (Math.PI * 2));
+        const bandCount = planet.bandColors.length;
+        const bandHeight = (r * 2) / bandCount;
+
+        for (let i = 0; i < bandCount; i++) {
+          const yOff = py - r + i * bandHeight;
+          const wave = Math.sin(bandOffset + i * 0.8) * 3;
+          ctx.fillStyle = planet.bandColors[i];
+          ctx.beginPath();
+          ctx.ellipse(px + wave, yOff + bandHeight * 0.5, r * 1.1, bandHeight * 0.6, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Storm spot for gas giants
+        if (planet.type === 'gas' || planet.type === 'ice') {
+          const stormX = px + Math.cos(planet.rotation * 2) * r * 0.4;
+          const stormY = py + r * 0.15;
+          const stormGrad = ctx.createRadialGradient(stormX, stormY, 0, stormX, stormY, r * 0.2);
+          stormGrad.addColorStop(0, 'hsla(' + (planet.baseHue + 30) + ', 60%, 50%, 0.3)');
+          stormGrad.addColorStop(1, 'transparent');
+          ctx.fillStyle = stormGrad;
+          ctx.beginPath();
+          ctx.ellipse(stormX, stormY, r * 0.2, r * 0.12, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Atmosphere edge highlight
+        const atmosGrad = ctx.createRadialGradient(px - r * 0.35, py - r * 0.35, r * 0.2, px, py, r);
+        atmosGrad.addColorStop(0, 'rgba(255, 255, 255, 0.08)');
+        atmosGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.02)');
+        atmosGrad.addColorStop(1, 'rgba(0, 0, 0, 0.3)');
+        ctx.fillStyle = atmosGrad;
+        ctx.fillRect(px - r, py - r, r * 2, r * 2);
+
+        // Terminator shadow (day/night line)
+        const shadowGrad = ctx.createLinearGradient(px - r, py, px + r, py);
+        shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        shadowGrad.addColorStop(0.6, 'rgba(0, 0, 0, 0)');
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0.45)');
+        ctx.fillStyle = shadowGrad;
+        ctx.fillRect(px - r, py - r, r * 2, r * 2);
+
+        ctx.restore();
+
+        // Specular highlight (shiny spot)
+        const specGrad = ctx.createRadialGradient(
+          px - r * 0.3, py - r * 0.3, 0,
+          px - r * 0.3, py - r * 0.3, r * 0.5
+        );
+        specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.12)');
+        specGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = specGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw ring in front of planet (top half)
+        if (planet.hasRing) {
+          drawRing(px, py, planet, time, 'front');
+        }
+
+        // Moons
+        planet.moonData.forEach(moon => {
+          const moonAngle = time * moon.speed + moon.phase;
+          const mx = px + Math.cos(moonAngle) * moon.distance;
+          const my = py + Math.sin(moonAngle) * moon.distance * 0.4;
+
+          // Moon glow
+          const moonGlow = ctx.createRadialGradient(mx, my, 0, mx, my, moon.size * 3);
+          moonGlow.addColorStop(0, 'rgba(255, 255, 255, ' + (moon.brightness * 0.15) + ')');
+          moonGlow.addColorStop(1, 'transparent');
+          ctx.fillStyle = moonGlow;
+          ctx.beginPath();
+          ctx.arc(mx, my, moon.size * 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Moon body
+          const moonBodyGrad = ctx.createRadialGradient(mx - 1, my - 1, 0, mx, my, moon.size);
+          moonBodyGrad.addColorStop(0, 'rgba(220, 225, 240, ' + moon.brightness + ')');
+          moonBodyGrad.addColorStop(1, 'rgba(140, 150, 180, ' + (moon.brightness * 0.6) + ')');
+          ctx.fillStyle = moonBodyGrad;
+          ctx.beginPath();
+          ctx.arc(mx, my, moon.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.restore();
+      }
+
+      function drawRing(cx, cy, planet, time, layer) {
+        if (!planet.hasRing) return;
+        ctx.save();
+
+        const r = planet.radius;
+        const innerR = r * planet.ringInner;
+        const outerR = r * planet.ringOuter;
+        const tilt = planet.ringTilt;
+
+        // We draw the ring as a flattened ellipse
+        // 'behind' draws the bottom arc, 'front' draws the top arc
+        const segments = 120;
+        const ringWidth = outerR - innerR;
+        const particleLayers = 4;
+
+        for (let layer_i = 0; layer_i < particleLayers; layer_i++) {
+          const layerR = innerR + (ringWidth * layer_i / particleLayers);
+          const layerAlpha = 1 - (layer_i / particleLayers) * 0.5;
+
+          ctx.beginPath();
+          for (let i = 0; i <= segments; i++) {
+            const angle = (i / segments) * Math.PI * 2;
+
+            // Only draw relevant half
+            if (layer === 'behind' && angle > 0 && angle < Math.PI) continue;
+            if (layer === 'front' && (angle <= 0 || angle >= Math.PI)) continue;
+
+            const rx = cx + Math.cos(angle) * layerR;
+            const ry = cy + Math.sin(angle) * layerR * tilt;
+
+            if (i === 0 || (layer === 'behind' && i === Math.ceil(segments / 2)) || (layer === 'front' && i === 1)) {
+              ctx.moveTo(rx, ry);
+            } else {
+              ctx.lineTo(rx, ry);
+            }
+          }
+
+          const grad = ctx.createLinearGradient(cx - outerR, cy, cx + outerR, cy);
+          grad.addColorStop(0, planet.ringColor2);
+          grad.addColorStop(0.3, planet.ringColor1);
+          grad.addColorStop(0.5, planet.ringColor1);
+          grad.addColorStop(0.7, planet.ringColor1);
+          grad.addColorStop(1, planet.ringColor2);
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = (ringWidth / particleLayers) * 0.6;
+          ctx.globalAlpha = planet.opacity * layerAlpha;
+          ctx.stroke();
+        }
+
+        ctx.restore();
+      }
+
+      // Subtle orbital path indicator
+      function drawOrbitPath(planet, time) {
+        const cx = planet.orbitCenterX * w + smoothMouseX * planet.parallax * w * 0.5;
+        const cy = planet.orbitCenterY * h + smoothMouseY * planet.parallax * h * 0.5;
+
+        ctx.save();
+        ctx.globalAlpha = 0.025;
+        ctx.strokeStyle = planet.glowColor.replace(/[\d.]+\)$/, '0.4)');
+        ctx.lineWidth = 0.5;
+        ctx.setLineDash([4, 8]);
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, planet.orbitRadiusX, planet.orbitRadiusY, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function animate() {
+        const time = Date.now();
+
+        // Smooth mouse tracking
+        smoothMouseX += (mouseX - smoothMouseX) * 0.03;
+        smoothMouseY += (mouseY - smoothMouseY) * 0.03;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Draw orbit paths first (very subtle)
+        planets.forEach(p => drawOrbitPath(p, time));
+
+        // Draw planets
+        planets.forEach(p => drawPlanet(p, time));
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
     })();
 
     // ═══════════════════════════════════════════════════════════
